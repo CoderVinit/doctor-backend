@@ -51,7 +51,7 @@ export class AdminService {
     }
   }
 
-  async addDoctor(doctorDto: CreateDoctorDto, image?: Express.Multer.File): Promise<{ message: string; doctor: any }> {
+  async addDoctor(doctorDto: CreateDoctorDto, image?: Express.Multer.File): Promise<{success: boolean; message: string; doctor: any }> {
     try {
       // Validate required fields
       if (!doctorDto.name || !doctorDto.email || !doctorDto.password || !doctorDto.speciality || !doctorDto.degree) {
@@ -111,6 +111,7 @@ export class AdminService {
       delete doctorResponse.password;
 
       return {
+        success:true,
         message: 'Doctor added successfully',
         doctor: doctorResponse,
       };

@@ -174,7 +174,7 @@ export class AuthService {
       const updateData: any = {};
 
       // Update basic fields if provided
-      if (updateUserDto.name) updateData.firstName = updateUserDto.name;
+      if (updateUserDto.firstName) updateData.firstName = updateUserDto.firstName;
       if (updateUserDto.phone) updateData.phone = updateUserDto.phone;
       if (updateUserDto.address) updateData.address = updateUserDto.address;
       if (updateUserDto.dob) updateData.dob = new Date(updateUserDto.dob);

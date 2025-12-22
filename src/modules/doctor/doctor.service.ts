@@ -219,12 +219,16 @@ export class DoctorService {
                   },
                 },
               })
+            
+            const totalAmount = Number(appointments.reduce((sum, app) => sum + (app.payment || app.isCompleted ? doctor[0].fees : 0), 0).toString().split('.')[0])
+
 
              const userIds = appointments.map(app => app.userId);
 
              const uniqueUserIds = Array.from(new Set(userIds));
         
               const data = {
+                    totalEarnings: totalAmount,
                     totalPatients: uniqueUserIds.length,
                     appointments:appointments.length,
                     latestAppointments:appointments.reverse().slice(0,5)
