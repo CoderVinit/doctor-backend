@@ -11,10 +11,11 @@ export class AppointmentCronService {
   ) {}
 
   @Cron(CronExpression.EVERY_HOUR, {
-    name: 'expire-appointments-cron',
-  })
+  name: 'expire-appointments-cron',
+})
   async handleExpiredAppointments() {
-    const nowUtc = new Date();
+    const now = new Date();
+
 
     const appointments =
       await this.appointmentService.findActivePaidAppointments();
@@ -22,24 +23,19 @@ export class AppointmentCronService {
     let cancelledCount = 0;
 
     for (const appt of appointments) {
-      /**
-       * slotDate: "22_12_2025"
-       * slotTime: "14:30"
-       */
+      // parseSlotDateTime already returns UTC Date
 
-      const [day, month, year] = appt.slotDate.split('_').map(Number);
-      const [hour, minute] = appt.slotTime.split(':').map(Number);
 
-      // Convert IST slot time → UTC
-      const slotUtc = new Date(
-        Date.UTC(year, month - 1, day, hour - 5, minute - 30),
-      );
+      // Indian Standard Time (IST)
+      const istDateTime = now.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+      const [istDate, istTime] = istDateTime.split(', ');
 
-      if (slotUtc < nowUtc && !appt.cancelled) {
-        await this.appointmentService.cancelAppointmentById(
-          appt.id,
-          appt.slotDate,
-        );
+      const slotDate = appt.slotDate.replace(/_/g, '/'); // Convert 22_12_2025 to 22/12/2025
+
+      console.log(slotDate, istDate,"date comparison");
+      // ✅ Date vs Date comparison
+      if (slotDate <= istDate && appt.slotTime < istTime && !appt.cancelled) {
+        await this.appointmentService.cancelAppointmentById(appt.id,appt.slotDate);
         cancelledCount++;
       }
     }
