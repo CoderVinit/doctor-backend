@@ -1,5 +1,6 @@
 import { webcrypto } from 'crypto';
 (globalThis as any).crypto = webcrypto;
+(global as any).crypto = webcrypto;
 
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
