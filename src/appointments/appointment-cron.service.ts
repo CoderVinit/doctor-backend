@@ -10,9 +10,10 @@ export class AppointmentCronService {
     private readonly appointmentService: AppointmentService,
   ) {}
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_HOUR, {
+  name: 'expire-appointments-cron',
+})
   async handleExpiredAppointments() {
-    // ✅ ALWAYS use Date object
     const now = new Date();
 
 
