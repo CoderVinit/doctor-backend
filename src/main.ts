@@ -1,6 +1,5 @@
-import { webcrypto } from 'crypto';
-(globalThis as any).crypto = webcrypto;
-(global as any).crypto = webcrypto;
+// Must be first import - polyfills for Node.js environment
+import './polyfills';
 
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
