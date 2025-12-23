@@ -1,14 +1,11 @@
 /**
  * Polyfills for Node.js environment
- * This file must be imported at the very top of main.ts before any other imports
+ * This file is loaded via --require flag before any other code
  */
-import { webcrypto } from 'crypto';
+import { webcrypto } from 'node:crypto';
 
 // Polyfill global crypto for @nestjs/schedule and other libraries
-if (typeof globalThis.crypto === 'undefined') {
-  (globalThis as any).crypto = webcrypto;
-}
+(globalThis as any).crypto = webcrypto;
+(global as any).crypto = webcrypto;
 
-if (typeof global.crypto === 'undefined') {
-  (global as any).crypto = webcrypto;
-}
+export {};
