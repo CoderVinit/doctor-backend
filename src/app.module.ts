@@ -7,11 +7,12 @@ import dotenv from 'dotenv';
 import { AdminModule } from './modules/admin/admin.module';
 import { DoctorModule } from './modules/doctor/doctor.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AppointmentsModule } from './appointments/appointments.module';
+import { AppointmentsModule } from './modules/appointments/appointments.module';
+import { AiModule } from './modules/ai/ai.module';
 dotenv.config();
 
 @Module({
-  imports: [DatabaseModule, AuthModule, AdminModule, DoctorModule, ScheduleModule.forRoot(), AppointmentsModule],
+  imports: [DatabaseModule, AuthModule, AdminModule, DoctorModule, ScheduleModule.forRoot(), AppointmentsModule, AiModule],
   controllers: [AppController],
   providers: [AppService],
 })

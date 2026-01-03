@@ -5,7 +5,12 @@
 import { webcrypto } from 'node:crypto';
 
 // Polyfill global crypto for @nestjs/schedule and other libraries
-(globalThis as any).crypto = webcrypto;
-(global as any).crypto = webcrypto;
+// Only set if crypto is not already available (Node.js 18+ has it natively)
+if (typeof globalThis.crypto === 'undefined') {
+  (globalThis as any).crypto = webcrypto;
+}
+if (typeof global.crypto === 'undefined') {
+  (global as any).crypto = webcrypto;
+}
 
 export {};

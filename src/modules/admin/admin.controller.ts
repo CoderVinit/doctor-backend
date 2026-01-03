@@ -88,7 +88,7 @@ export class AdminController {
   }
 
 
-  @Post('cancel-appointment')
+  @Post('cancel-appointments')
   @UseGuards(AdminAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Cancel an appointment' })

@@ -17,7 +17,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "seed:doctors": "ts-node -r tsconfig-paths/register src/db/seed-doctors.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -33,6 +34,8 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
     "jsonwebtoken": "^9.0.2",
+    "ml-logistic-regression": "^2.0.0",
+    "ml-matrix": "^6.12.1",
     "multer": "^2.0.2",
     "next-cloudinary": "^6.17.5",
     "pg": "^8.16.3",

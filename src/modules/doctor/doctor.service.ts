@@ -219,8 +219,14 @@ export class DoctorService {
                   },
                 },
               })
+
+
             
-            const totalAmount = Number(appointments.reduce((sum, app) => sum + (app.payment || app.isCompleted ? doctor[0].fees : 0), 0).toString().split('.')[0])
+              const totalAmount = Number(appointments.reduce((acc,app)=>{
+                return (
+                    acc + (app.payment || app.isCompleted ? Number(app.doctor.fees):0)
+                )
+              },0))
 
 
              const userIds = appointments.map(app => app.userId);

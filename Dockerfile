@@ -24,18 +24,15 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install all dependencies (including dev for migrations)
-RUN npm ci
+RUN npm ci --omit=dev
 
 # Copy built application from builder stage
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/drizzle ./drizzle
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/tsconfig.json ./
-COPY --from=builder /app/tsconfig.build.json ./
 COPY --from=builder /app/drizzle.config.ts ./
 
 # Expose the application port
 EXPOSE 8000
 
 # Start the application with npm run start:dev
-CMD ["npm", "run", "start:dev"]
+CMD ["node", "dist/main.js"]

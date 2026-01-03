@@ -158,10 +158,18 @@ export class AuthService {
   async updateProfile(
     userId: string,
     updateUserDto: UpdateUserProfileDto,
-    imageFile?: any,
+    imageFile?: Express.Multer.File,
   ): Promise<{ success: boolean; message: string; user: UserEntity }> {
     try {
-      console.log('updateUserDto', imageFile);
+      console.log('updateUserDto:', updateUserDto);
+      console.log('imageFile received:', imageFile ? { 
+        fieldname: imageFile.fieldname,
+        originalname: imageFile.originalname,
+        mimetype: imageFile.mimetype,
+        size: imageFile.size,
+        hasBuffer: !!imageFile.buffer
+      } : 'No image file');
+
       const user = await this.db
         .select()
         .from(userSchema)
@@ -181,17 +189,29 @@ export class AuthService {
       if (updateUserDto.gender) updateData.gender = updateUserDto.gender;
 
       // Upload image to Cloudinary if provided
-      if (imageFile) {
+      if (imageFile && imageFile.buffer) {
         try {
-          const imageUrl = await this.cloudinaryService.uploadImage(
-            imageFile.buffer,
-          );
+          console.log('Uploading image to Cloudinary...');
+          const imageUrl = await this.cloudinaryService.uploadImage(imageFile);
+          console.log('Cloudinary upload successful:', imageUrl);
           updateData.image = imageUrl;
         } catch (error) {
+          console.error('Cloudinary upload error:', error);
           throw new BadRequestException(
             `Image upload failed: ${error.message}`,
           );
         }
+      }
+
+      console.log('Update data to save:', updateData);
+
+      // Only update if there's data to update
+      if (Object.keys(updateData).length === 0) {
+        return {
+          success: true,
+          message: 'No changes to update',
+          user: new UserEntity(user[0]).toJSON() as any,
+        };
       }
 
       // Update user in database
@@ -200,6 +220,8 @@ export class AuthService {
         .set(updateData)
         .where(eq(userSchema.id, userId))
         .returning();
+
+      console.log('Updated user result:', updatedUser[0]?.image);
 
       if (updatedUser.length === 0) {
         throw new BadRequestException('Failed to update profile');
@@ -213,6 +235,7 @@ export class AuthService {
         user: userEntity.toJSON() as any,
       };
     } catch (error) {
+      console.error('updateProfile error:', error);
       throw error;
     }
   }
@@ -475,7 +498,6 @@ export class AuthService {
     }
   }
 
-
   async initiateRazorpayPayment(body:{appointmentId:string}):Promise<{success:boolean;message:string;order:any}> {
     try {
 
@@ -527,6 +549,27 @@ export class AuthService {
         error?.error?.description || error?.message || 'Failed to create Razorpay order',
       );
       
+    }
+  }
+
+  async getDocSpecialityList(){
+    try {
+      const doctors = await this.db
+      .select()
+      .from(doctorSchema)
+
+
+      const specialityList = await doctors.map((doc)=>doc.speciality)
+
+      return {
+        success:true,
+        specialityList
+      }
+
+    } catch (error) {
+       throw new BadRequestException(
+        error?.message || 'Failed to fetch speciality list',
+      );   
     }
   }
 

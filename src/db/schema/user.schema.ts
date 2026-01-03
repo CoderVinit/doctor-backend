@@ -5,15 +5,11 @@ import {
   timestamp,
   boolean,
   text,
-  numeric,
-  json,
-  foreignKey,
-  primaryKey,
 } from 'drizzle-orm/pg-core';
 
 export const userSchema = pgTable('users', {
-  id: uuid('id').defaultRandom(),
-  email: varchar('email', { length: 255 }).notNull(),
+  id: uuid('id').defaultRandom().primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
   password: varchar('password', { length: 255 }).notNull(),
   firstName: varchar('first_name', { length: 100 }),
   lastName: varchar('last_name', { length: 100 }),
@@ -26,7 +22,4 @@ export const userSchema = pgTable('users', {
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
   updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow(),
-}, (table) => ({
-  // Composite primary key including partition key (role)
-  pk: primaryKey({ columns: [table.id, table.role] }),
-}));
+});

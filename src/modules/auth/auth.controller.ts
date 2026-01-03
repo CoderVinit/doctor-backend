@@ -38,6 +38,11 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
+  @Get("get-speciality")
+  async getDocSpeciality(){
+    return this.authService.getDocSpecialityList();
+  }
+
   @Get("get-profile")
   @UseGuards(AuthGuard)
   @ApiBearerAuth('JWT-auth')
@@ -147,4 +152,6 @@ async verifyRazorpay(
     const userId = (req as any).user.id;
     return this.authService.initiateRazorpayPayment(body);
   }
+
+  
 }
